@@ -1,0 +1,126 @@
+(ns seibutsu.app
+  "seibutsu appview frontend — single-page app (ADR-2608080100).
+
+  Faithful cljs port of the previous SvelteKit `+page.svelte`
+  (`svelte/src/routes/+page.svelte`): a single static app-metadata card
+  showing title/project/name/kind/routeCount/routes/vars/xrpc/relativePath,
+  plus 'Public Routes' / 'Runtime Bindings' / 'Source' sections. Rebuilt on
+  this workspace's mandatory stack (reagent + re-frame + hiccup, jp-go-dds
+  as the base design system — see CLAUDE.md / skill `kotoba-uiux`) instead
+  of the hand-rolled `<style>` block the Svelte file carried.
+
+  `default-db` / `initialize-db-handler` and the individual sub handler fns
+  are named (not anonymous) so `test/seibutsu/app_test.cljs` can assert on
+  the event/sub logic, and on the panel functions' returned hiccup, without
+  mounting anything. Panel/layout functions call the `jp-go-dds.core`
+  helpers (`container` / `section` / `row` / `stack` / `card`) directly
+  (`(dds/row ...)`, not `[dds/row ...]`) so the value returned by e.g.
+  `facts-panel` is the fully expanded hiccup, not a deferred component
+  reference — that keeps the panel functions testable as plain data.
+  There is exactly one view and one mount point (`#app`) — no router, no
+  second document.
+
+  `public/index.html` (the one document this app serves) is generated, not
+  hand written — see `scripts/gen-page.cljs`, which builds it from
+  `jp-go-dds.page/->page` with the vendored `dds.css` inlined:
+
+    DDS_ROOT=<path-to-jp-go-digital-design-system> \\
+      nbb --classpath \"$(clojure -Spath)\" scripts/gen-page.cljs
+
+  The original `+server.ts` XRPC → MCP-router proxy is backend, not
+  frontend; it was preserved byte-identical (with a header noting it is
+  unwired) at `../src/xrpc-proxy.ts` and has no counterpart here."
+  (:require [reagent.dom :as rdom]
+            [re-frame.core :as rf]
+            [jp-go-dds.core :as dds]))
+
+;; --- db ------------------------------------------------------------------
+
+(def default-db
+  {:title "Seibutsu S3ibtsu1"
+   :project "etzhayyim-project-seibutsu"
+   :name "etzhayyim-wasm-seibutsu-s3ibtsu1"
+   :kind "appview"
+   :route-count 0
+   :routes []
+   :vars []
+   :xrpc true
+   :relative-path "60-apps/etzhayyim-project-seibutsu/appview/etzhayyim-wasm-seibutsu-s3ibtsu1/svelte/src/routes/+page.svelte"})
+
+(defn initialize-db-handler
+  [_db _event]
+  default-db)
+
+(rf/reg-event-db ::initialize-db initialize-db-handler)
+
+(defn title-sub [db _] (:title db))
+(defn project-sub [db _] (:project db))
+(defn name-sub [db _] (:name db))
+(defn kind-sub [db _] (:kind db))
+(defn route-count-sub [db _] (:route-count db))
+(defn routes-sub [db _] (:routes db))
+(defn vars-sub [db _] (:vars db))
+(defn xrpc-sub [db _] (:xrpc db))
+(defn relative-path-sub [db _] (:relative-path db))
+
+(rf/reg-sub ::title title-sub)
+(rf/reg-sub ::project project-sub)
+(rf/reg-sub ::name name-sub)
+(rf/reg-sub ::kind kind-sub)
+(rf/reg-sub ::route-count route-count-sub)
+(rf/reg-sub ::routes routes-sub)
+(rf/reg-sub ::vars vars-sub)
+(rf/reg-sub ::xrpc xrpc-sub)
+(rf/reg-sub ::relative-path relative-path-sub)
+
+;; --- view ------------------------------------------------------------------
+
+(defn top-panel []
+  (let [kind @(rf/subscribe [::kind])
+        title @(rf/subscribe [::title])
+        name @(rf/subscribe [::name])]
+    (dds/stack
+     [:p (str "Cloudflare " kind)]
+     (dds/heading 1 title)
+     [:span name])))
+
+(defn facts-panel []
+  (let [project @(rf/subscribe [::project])
+        route-count @(rf/subscribe [::route-count])
+        xrpc? @(rf/subscribe [::xrpc])]
+    (dds/row
+     (dds/card [:span "Project"] [:strong project])
+     (dds/card [:span "Routes"] [:strong (str route-count)])
+     (dds/card [:span "XRPC"] [:strong (if xrpc? "enabled" "not configured")]))))
+
+(defn public-routes-panel []
+  (let [routes @(rf/subscribe [::routes])]
+    (dds/section {:title "Public Routes"}
+     (if (seq routes)
+       (into [:ul] (for [route routes] [:li route]))
+       [:p.muted "No public route is declared next to this app surface."]))))
+
+(defn runtime-bindings-panel []
+  (let [vars @(rf/subscribe [::vars])]
+    (dds/section {:title "Runtime Bindings"}
+     (if (seq vars)
+       (into [:ul] (for [k vars] [:li k]))
+       [:p.muted "No public vars are declared in the nearest wrangler config."]))))
+
+(defn source-panel []
+  (let [relative-path @(rf/subscribe [::relative-path])]
+    (dds/section {:title "Source"}
+     [:p relative-path])))
+
+(defn app-view []
+  [:main
+   (dds/container
+    [top-panel]
+    [facts-panel]
+    [public-routes-panel]
+    [runtime-bindings-panel]
+    [source-panel])])
+
+(defn ^:export main []
+  (rf/dispatch-sync [::initialize-db])
+  (rdom/render [app-view] (.getElementById js/document "app")))
