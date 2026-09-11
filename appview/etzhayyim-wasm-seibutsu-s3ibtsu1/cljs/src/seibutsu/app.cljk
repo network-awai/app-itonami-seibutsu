@@ -25,7 +25,7 @@
   `jp-go-dds.page/->page` with the vendored `dds.css` inlined:
 
     DDS_ROOT=<path-to-jp-go-digital-design-system> \\
-      nbb --classpath \"$(clojure -Spath)\" scripts/gen-page.cljs
+      kbb --backend sci --classpath \"$(kbb -Spath)\" scripts/gen-page.cljs
 
   The original `+server.ts` XRPC → MCP-router proxy is backend, not
   frontend; it was preserved byte-identical (with a header noting it is
