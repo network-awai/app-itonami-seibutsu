@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import { MockEtzhayyim } from "@etzhayyim/sdk-mock";
+import { describe, it, beforeEach } from "node:test";
+import { expect } from "./expect.mjs";
+import { LocalStore } from "../dist/local-store.js";
 import {
   registerTaxon,
   getTaxon,
@@ -9,14 +10,14 @@ import {
   ingestObservation,
   listObservations,
   coverage,
-} from "../src/index.js";
+} from "../dist/domain/index.js";
 
 const SRC = "https://www.gbif.org/species/example";
 
 describe("seibutsu kotoba", () => {
   let e: any;
   beforeEach(() => {
-    e = new MockEtzhayyim({ did: "did:web:seibutsu.itonami.cloud" });
+    e = new LocalStore({ did: "did:web:seibutsu.itonami.cloud" });
   });
 
   describe("taxon hierarchy", () => {

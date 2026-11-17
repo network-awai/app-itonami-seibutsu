@@ -4,7 +4,7 @@
  * Public biodiversity open-data only; image-identification AI compute stays itonami.
  */
 
-import type { Etzhayyim } from "@etzhayyim/sdk";
+import type { LocalStore } from "../local-store.js";
 import {
   HABITS,
   OBSERVATION_COLLECTION,
@@ -46,12 +46,12 @@ import {
 const PAGE_LIMIT = 100;
 const DEFAULT_MAX_SCAN = 10_000;
 
-async function exists(e: Etzhayyim, collection: string, rkey: string): Promise<boolean> {
+async function exists(e: LocalStore, collection: string, rkey: string): Promise<boolean> {
   const resp = await e.read({ collection, rkey }).catch(() => ({ records: [] }));
   return Boolean(resp.records[0]?.value);
 }
 
-async function scanAll<T>(e: Etzhayyim, collection: string, maxScan: number, onRow: (v: T) => void): Promise<number> {
+async function scanAll<T>(e: LocalStore, collection: string, maxScan: number, onRow: (v: T) => void): Promise<number> {
   let cursor: string | undefined;
   let scanned = 0;
   while (scanned < maxScan) {
@@ -69,7 +69,7 @@ async function scanAll<T>(e: Etzhayyim, collection: string, maxScan: number, onR
 
 // ─── Taxon ──────────────────────────────────────────────────────────
 
-export async function registerTaxon(e: Etzhayyim, input: RegisterTaxonInput): Promise<RegisterTaxonOutput> {
+export async function registerTaxon(e: LocalStore, input: RegisterTaxonInput): Promise<RegisterTaxonOutput> {
   if (!input.taxonId || !input.scientificName) return { status: "rejected", error: "missingRequiredFields" };
   if (!TAXON_RANKS.has(input.rank)) return { status: "rejected", error: "invalidRank" };
   if (input.parentTaxonId && !(await exists(e, TAXON_COLLECTION, taxonRkey(input.parentTaxonId)))) {
@@ -98,7 +98,7 @@ export async function registerTaxon(e: Etzhayyim, input: RegisterTaxonInput): Pr
   return { status: "registered", taxonUri: receipt.uri, did, taxonId: input.taxonId };
 }
 
-export async function getTaxon(e: Etzhayyim, input: GetTaxonInput): Promise<GetTaxonOutput> {
+export async function getTaxon(e: LocalStore, input: GetTaxonInput): Promise<GetTaxonOutput> {
   if (!input.taxonId) return { error: "invalidTaxonId" };
   const resp = await e.read<TaxonRecord>({ collection: TAXON_COLLECTION, rkey: taxonRkey(input.taxonId) }).catch(() => ({ records: [] }));
   const r = resp.records[0];
@@ -106,7 +106,7 @@ export async function getTaxon(e: Etzhayyim, input: GetTaxonInput): Promise<GetT
   return { taxon: { ...r.value, taxonUri: r.uri } };
 }
 
-export async function listTaxa(e: Etzhayyim, input: ListTaxaInput = {}): Promise<ListTaxaOutput> {
+export async function listTaxa(e: LocalStore, input: ListTaxaInput = {}): Promise<ListTaxaOutput> {
   const limit = Math.min(input.limit ?? 50, 200);
   const resp = await e.read<TaxonRecord>({ collection: TAXON_COLLECTION, cursor: input.cursor, limit });
   const q = input.q?.toLowerCase();
@@ -127,7 +127,7 @@ export async function listTaxa(e: Etzhayyim, input: ListTaxaInput = {}): Promise
 
 // ─── Traits ─────────────────────────────────────────────────────────
 
-export async function deriveTraits(e: Etzhayyim, input: DeriveTraitsInput): Promise<DeriveTraitsOutput> {
+export async function deriveTraits(e: LocalStore, input: DeriveTraitsInput): Promise<DeriveTraitsOutput> {
   if (!input.traitId || !input.taxonId) return { status: "rejected", error: "missingRequiredFields" };
   if (!HABITS.has(input.habit)) return { status: "rejected", error: "invalidHabit" };
   if (input.matureHeightCm != null && !isUint(input.matureHeightCm)) return { status: "rejected", error: "matureHeightCmMustBeUint" };
@@ -156,7 +156,7 @@ export async function deriveTraits(e: Etzhayyim, input: DeriveTraitsInput): Prom
   return { status: "derived", traitsUri: receipt.uri, did, traitId: input.traitId };
 }
 
-export async function listTraits(e: Etzhayyim, input: ListTraitsInput = {}): Promise<ListTraitsOutput> {
+export async function listTraits(e: LocalStore, input: ListTraitsInput = {}): Promise<ListTraitsOutput> {
   const limit = Math.min(input.limit ?? 50, 200);
   const resp = await e.read<TraitsRecord>({ collection: TRAITS_COLLECTION, cursor: input.cursor, limit });
   const items: TraitsView[] = resp.records
@@ -172,7 +172,7 @@ export async function listTraits(e: Etzhayyim, input: ListTraitsInput = {}): Pro
 
 // ─── Observation ────────────────────────────────────────────────────
 
-export async function ingestObservation(e: Etzhayyim, input: IngestObservationInput): Promise<IngestObservationOutput> {
+export async function ingestObservation(e: LocalStore, input: IngestObservationInput): Promise<IngestObservationOutput> {
   if (!input.observationId || !input.taxonId || !input.observedAt) return { status: "rejected", error: "missingRequiredFields" };
   if (input.geoH3 && !isH3Cell(input.geoH3.toLowerCase())) return { status: "rejected", error: "invalidH3Cell" };
   if (!(await exists(e, TAXON_COLLECTION, taxonRkey(input.taxonId)))) {
@@ -199,7 +199,7 @@ export async function ingestObservation(e: Etzhayyim, input: IngestObservationIn
   return { status: "ingested", observationUri: receipt.uri, did, observationId: input.observationId };
 }
 
-export async function listObservations(e: Etzhayyim, input: ListObservationsInput = {}): Promise<ListObservationsOutput> {
+export async function listObservations(e: LocalStore, input: ListObservationsInput = {}): Promise<ListObservationsOutput> {
   const limit = Math.min(input.limit ?? 50, 200);
   const resp = await e.read<ObservationRecord>({ collection: OBSERVATION_COLLECTION, cursor: input.cursor, limit });
   const geoH3 = input.geoH3?.toLowerCase();
@@ -217,7 +217,7 @@ export async function listObservations(e: Etzhayyim, input: ListObservationsInpu
 
 // ─── Coverage ───────────────────────────────────────────────────────
 
-export async function coverage(e: Etzhayyim, input: CoverageInput = {}): Promise<CoverageOutput> {
+export async function coverage(e: LocalStore, input: CoverageInput = {}): Promise<CoverageOutput> {
   const maxScan = Math.min(input.maxScan ?? DEFAULT_MAX_SCAN, DEFAULT_MAX_SCAN);
   const taxaByRank: Record<string, number> = {};
   const taxonCount = await scanAll<TaxonRecord>(e, TAXON_COLLECTION, maxScan, (v) => {
