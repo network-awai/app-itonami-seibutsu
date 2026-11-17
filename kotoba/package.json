@@ -1,9 +1,9 @@
 {
-  "name": "@etzhayyim/seibutsu-kotoba",
+  "name": "@itonami/seibutsu-kotoba",
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "kotoba reference implementation of seibutsu (生物 biodiversity taxonomy open-data: taxa + procedural traits + citizen-science observations) using @etzhayyim/sdk. Registry on AT PDS (replaces RW graph). GBIF/iNaturalist model — public reference; image→species identify (Murakumo inference) stays etzhayyim. Substrate posture per ADR-2605172000.",
+  "description": "kotoba reference implementation of seibutsu (生物 biodiversity taxonomy open-data: taxa + procedural traits + citizen-science observations) using @etzhayyim/sdk. Registry on AT PDS (replaces RW graph). GBIF/iNaturalist model — public reference; image→species identify (Murakumo inference) stays itonami. Substrate posture per ADR-2605172000.",
   "license": "Apache-2.0",
   "main": "src/index.ts",
   "scripts": { "typecheck": "tsc --noEmit", "test": "vitest run" },

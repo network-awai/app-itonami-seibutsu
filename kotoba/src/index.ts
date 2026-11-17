@@ -1,7 +1,7 @@
 /**
  * seibutsu (生物) kotoba — barrel.
  *
- * Per ADR-2606011400. Public biodiversity taxonomy open-data on the etzhayyim
+ * Per ADR-2606011400. Public biodiversity taxonomy open-data on the itonami
  * substrate (AT PDS records; no RW) — the GBIF / iNaturalist model.
  *
  *   taxon       : registerTaxon (self-ref parent FK) / getTaxon / listTaxa (q = name search)
@@ -9,8 +9,8 @@
  *   observation : ingestObservation (FK→taxon, H3 geo, public observer handle) / listObservations
  *   coverage
  *
- * (a) etzhayyim front. The image→species `identify` capability (Murakumo fleet
- * inference) is AI compute and stays etzhayyim; the catalog itself is open-data.
+ * (a) itonami front. The image→species `identify` capability (Murakumo fleet
+ * inference) is AI compute and stays itonami; the catalog itself is open-data.
  */
 
 export * from "./types.js";

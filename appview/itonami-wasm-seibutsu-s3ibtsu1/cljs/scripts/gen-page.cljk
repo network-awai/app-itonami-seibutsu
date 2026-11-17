@@ -9,10 +9,10 @@
 (def out-path "public/index.html")
 (defn page []
   (dds-page/->page
-   {:title "etzhayyim-wasm-seibutsu-s3ibtsu1"
+   {:title "itonami-wasm-seibutsu-s3ibtsu1"
     :description "Seibutsu (生物) appview — reagent + re-frame + jp-go-dds."
     :lang "ja" :css dds-css}
-   [:div {:id "app"} "etzhayyim-wasm-seibutsu-s3ibtsu1 loading…"]
+   [:div {:id "app"} "itonami-wasm-seibutsu-s3ibtsu1 loading…"]
    [:noscript "This app requires JavaScript."]
    [:script {:src "js/app.js"}]))
 (defn -main [& args]

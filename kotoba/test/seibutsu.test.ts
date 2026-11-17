@@ -16,7 +16,7 @@ const SRC = "https://www.gbif.org/species/example";
 describe("seibutsu kotoba", () => {
   let e: any;
   beforeEach(() => {
-    e = new MockEtzhayyim({ did: "did:web:seibutsu.etzhayyim.com" });
+    e = new MockEtzhayyim({ did: "did:web:seibutsu.itonami.cloud" });
   });
 
   describe("taxon hierarchy", () => {

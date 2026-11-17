@@ -38,14 +38,14 @@
 
 (def default-db
   {:title "Seibutsu S3ibtsu1"
-   :project "etzhayyim-project-seibutsu"
-   :name "etzhayyim-wasm-seibutsu-s3ibtsu1"
+   :project "itonami-project-seibutsu"
+   :name "itonami-wasm-seibutsu-s3ibtsu1"
    :kind "appview"
    :route-count 0
    :routes []
    :vars []
    :xrpc true
-   :relative-path "60-apps/etzhayyim-project-seibutsu/appview/etzhayyim-wasm-seibutsu-s3ibtsu1/svelte/src/routes/+page.svelte"})
+   :relative-path "60-apps/itonami-project-seibutsu/appview/itonami-wasm-seibutsu-s3ibtsu1/svelte/src/routes/+page.svelte"})
 
 (defn initialize-db-handler
   [_db _event]

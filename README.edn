@@ -1,1 +1,1 @@
-{:schema "etzhayyim.repository/v1" :name "com-etzhayyim-app-seibutsu" :kind :app :canonical-metadata :edn}
+{:schema "itonami.repository/v1" :name "app-itonami-seibutsu" :kind :app :canonical-metadata :edn}
