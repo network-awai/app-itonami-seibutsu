@@ -1,4 +1,5 @@
-{
+// Preset taxa (7 families) from kami-vegetation::taxonomy, formerly seed/preset-taxa.json.
+export default {
   "$comment": "Seed catalog: 7 taxa derived from kami-vegetation::taxonomy preset profiles. Each entry materialises a (taxon, traits) record pair. Hierarchy via parentDid.",
   "taxa": [
     {
@@ -124,3 +125,4 @@
     }
   ]
 }
+;

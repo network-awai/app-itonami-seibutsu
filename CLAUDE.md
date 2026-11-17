@@ -1,3 +1,5 @@
+> **2026-11-17 (AWAI-3079):** この app は Tauri v3 の local app に変わりました。現在の構成とコマンドは [README.md](README.md) を見てください。Cloudflare Worker・XRPC・PDS・deploy に関する以下の記述は、以前の設計の記録で、今のコードとは一致しません。
+
 # Seibutsu (生物) — Biological Entities as Actors
 
 Living taxa and observed individuals as DID-addressed actors. Procedural-generation profiles (`cloud.itonami.apps.seibutsu.traits`) feed `kami-vegetation` engine 1:1.
