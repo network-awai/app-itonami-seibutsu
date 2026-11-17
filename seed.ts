@@ -3,7 +3,7 @@
  * `40-engine/kami-engine/kami-vegetation/src/taxonomy.rs`.
  *
  * Run:
- *   npx tsx 60-apps/etzhayyim-project-seibutsu/seed.ts
+ *   npx tsx 60-apps/itonami-project-seibutsu/seed.ts
  *
  * Idempotent: createRecord with the same TID is rejected; this seed uses
  * GBIF-derived stable rkeys to deduplicate.
@@ -11,25 +11,25 @@
 
 import seed from "./seed/preset-taxa.json" with { type: "json" };
 
-const PDS = process.env.PDS ?? "https://atproto.etzhayyim.com";
+const PDS = process.env.PDS ?? "https://atproto.itonami.cloud";
 const ROOT_DID = process.env.ROOT_DID ?? "did:plc:y3nnbwowvrtamshornglr7fa";
 const PROJECT_ID = "seibutsu";
 
-// ADR-0023 P4: use etzhayyim_TOKEN (sk_live_*) Bearer instead of spoofable
-// x-kotodama-verified header. Required: `export etzhayyim_TOKEN=$(etzhayyim auth token)`
+// ADR-0023 P4: use itonami_TOKEN (sk_live_*) Bearer instead of spoofable
+// x-kotodama-verified header. Required: `export itonami_TOKEN=$(itonami auth token)`
 // before running this script.
-const etzhayyim_TOKEN = process.env.etzhayyim_TOKEN;
-if (!etzhayyim_TOKEN) {
-  throw new Error("etzhayyim_TOKEN env var required — run `export etzhayyim_TOKEN=$(etzhayyim auth token)` first");
+const itonami_TOKEN = process.env.itonami_TOKEN;
+if (!itonami_TOKEN) {
+  throw new Error("itonami_TOKEN env var required — run `export itonami_TOKEN=$(itonami auth token)` first");
 }
 const HEADERS = {
   "Content-Type": "application/json",
-  "Authorization": `Bearer ${etzhayyim_TOKEN}`,
-  "x-etzhayyim-org-id": "anon",
+  "Authorization": `Bearer ${itonami_TOKEN}`,
+  "x-itonami-org-id": "anon",
 };
 
 async function actorCreate(did: string, displayName: string, description: string): Promise<void> {
-  const res = await fetch(`${PDS}/xrpc/com.etzhayyim.actor.create`, {
+  const res = await fetch(`${PDS}/xrpc/cloud.itonami.actor.create`, {
     method: "POST",
     headers: HEADERS,
     body: JSON.stringify({ did, projectId: PROJECT_ID, displayName, description, hasWorker: false }),
@@ -73,13 +73,13 @@ async function main(): Promise<void> {
 
     await actorCreate(taxon.did, taxon.scientificName, `${taxon.rank}: ${taxon.scientificName} (${taxon.commonName ?? "—"})`);
 
-    await createRecord(ROOT_DID, "com.etzhayyim.apps.seibutsu.taxon", rkey, {
+    await createRecord(ROOT_DID, "cloud.itonami.apps.seibutsu.taxon", rkey, {
       ...taxon,
       createdAt: new Date().toISOString(),
       orgId: "anon", userId: "anon", actorId: PROJECT_ID,
     });
 
-    await createRecord(ROOT_DID, "com.etzhayyim.apps.seibutsu.traits", rkey, {
+    await createRecord(ROOT_DID, "cloud.itonami.apps.seibutsu.traits", rkey, {
       taxonDid: taxon.did,
       ...traits,
       createdAt: new Date().toISOString(),

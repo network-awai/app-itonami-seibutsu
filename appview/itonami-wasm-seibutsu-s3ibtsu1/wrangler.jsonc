@@ -26,15 +26,15 @@
     "APP_CAPABILITIES": "[\"RegisterTaxon\",\"DeriveTraits\",\"IngestObservation\",\"GetProfile\",\"RenderProfile\",\"IdentifyFromImage\",\"ResolveLineage\",\"SyncGbif\",\"SyncWikidata\"]",
     "APP_DESCRIPTION": "Biological taxa and individual organisms as DID-addressed actors. Procedural-generation traits feed the kami-vegetation engine.",
     "APP_DISPLAY_NAME": "Seibutsu (生物)",
-    "APP_EMBED_URL": "https://s3ibtsu1.etzhayyim.com/?embed=1",
+    "APP_EMBED_URL": "https://s3ibtsu1.itonami.cloud/?embed=1",
     "APP_FRAMEWORK": "cljs-reagent-re-frame-jp-go-dds",
     "APP_NANOID": "s3ibtsu1",
     "APP_PERFORMER_TYPE": "service",
     "APP_UI_TYPE": "iframe",
     "GBIF_BASE_URL": "https://api.gbif.org/v1",
-    "MURAKUMO_GATEWAY": "https://murakumo.etzhayyim.com",
+    "MURAKUMO_GATEWAY": "https://murakumo.itonami.cloud",
     "WIKIDATA_BASE_URL": "https://www.wikidata.org/wiki",
-    "AGENTGATEWAY_MCP_ROUTER_URL": "https://mcp.etzhayyim.com/xrpc/com.etzhayyim.mcp.message"
+    "AGENTGATEWAY_MCP_ROUTER_URL": "https://mcp.itonami.cloud/xrpc/cloud.itonami.mcp.message"
   },
   "rules": [
     {
@@ -46,12 +46,12 @@
   ],
   "routes": [
     {
-      "pattern": "s3ibtsu1.etzhayyim.com/*",
-      "zone_name": "etzhayyim.com"
+      "pattern": "s3ibtsu1.itonami.cloud/*",
+      "zone_name": "itonami.cloud"
     },
     {
-      "pattern": "seibutsu.etzhayyim.com/*",
-      "zone_name": "etzhayyim.com"
+      "pattern": "seibutsu.itonami.cloud/*",
+      "zone_name": "itonami.cloud"
     }
   ]
 }

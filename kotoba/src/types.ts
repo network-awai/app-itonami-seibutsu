@@ -7,7 +7,7 @@
  * the GBIF / iNaturalist model: taxa, procedural traits, and citizen-science
  * sightings are PUBLIC reference data. No settlement, no PII custody, no
  * fulfillment liability. The `identify` image→species capability (Murakumo
- * fleet inference) is AI COMPUTE and stays etzhayyim; the catalog itself migrates.
+ * fleet inference) is AI COMPUTE and stays itonami; the catalog itself migrates.
  *
  * PII posture: observer is a PUBLIC contributor-handle attribution (iNaturalist-
  * style), not raw personal data. Sighting geo is coarsened to an H3 cell (never
@@ -18,17 +18,17 @@
  * do not nest.
  *
  * Identity hierarchy:
- *   did:web:seibutsu.etzhayyim.com                       — controller
- *   did:web:seibutsu.etzhayyim.com:taxon:{taxonId}       — a taxon
- *   did:web:seibutsu.etzhayyim.com:traits:{traitId}      — a procedural profile
- *   did:web:seibutsu.etzhayyim.com:obs:{observationId}   — a sighting
+ *   did:web:seibutsu.itonami.cloud                       — controller
+ *   did:web:seibutsu.itonami.cloud:taxon:{taxonId}       — a taxon
+ *   did:web:seibutsu.itonami.cloud:traits:{traitId}      — a procedural profile
+ *   did:web:seibutsu.itonami.cloud:obs:{observationId}   — a sighting
  */
 
-export const SEIBUTSU_DID_PREFIX = "did:web:seibutsu.etzhayyim.com:" as const;
+export const SEIBUTSU_DID_PREFIX = "did:web:seibutsu.itonami.cloud:" as const;
 
-export const TAXON_COLLECTION = "com.etzhayyim.apps.seibutsu.taxon";
-export const TRAITS_COLLECTION = "com.etzhayyim.apps.seibutsu.traits";
-export const OBSERVATION_COLLECTION = "com.etzhayyim.apps.seibutsu.observation";
+export const TAXON_COLLECTION = "cloud.itonami.apps.seibutsu.taxon";
+export const TRAITS_COLLECTION = "cloud.itonami.apps.seibutsu.traits";
+export const OBSERVATION_COLLECTION = "cloud.itonami.apps.seibutsu.observation";
 
 // ─── Enums ──────────────────────────────────────────────────────────
 

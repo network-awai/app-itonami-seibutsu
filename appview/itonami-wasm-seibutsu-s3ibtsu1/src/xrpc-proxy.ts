@@ -1,11 +1,11 @@
 // SVELTEKIT-BACKEND-PRESERVED: moved out of svelte/ during the cljs migration; not wired.
-// Source: appview/etzhayyim-wasm-seibutsu-s3ibtsu1/svelte/src/routes/xrpc/[...path]/+server.ts (byte-identical below this header)
+// Source: appview/itonami-wasm-seibutsu-s3ibtsu1/svelte/src/routes/xrpc/[...path]/+server.ts (byte-identical below this header)
 // It imports @sveltejs/kit and will not run outside a SvelteKit build. Whether to
 // re-wire it into src/app.ts is a product decision, not part of this migration.
 import { json, type RequestEvent } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-const DEFAULT_MCP_ROUTER_URL = 'https://mcp.etzhayyim.com/xrpc/com.etzhayyim.mcp.message';
+const DEFAULT_MCP_ROUTER_URL = 'https://mcp.itonami.cloud/xrpc/cloud.itonami.mcp.message';
 
 type Env = Record<string, unknown> & {
   AGENTGATEWAY_MCP_ROUTER_URL?: string;
@@ -40,8 +40,8 @@ export const POST: RequestHandler = async (event) => {
   const headers = new Headers(event.request.headers);
   headers.delete('host');
   headers.set('content-type', 'application/json');
-  headers.set('x-etzhayyim-bff', 'sveltekit-edge-bff');
-  headers.set('x-etzhayyim-xrpc-method', nsid);
+  headers.set('x-itonami-bff', 'sveltekit-edge-bff');
+  headers.set('x-itonami-xrpc-method', nsid);
 
   const upstream = await fetch(mcpRouterUrl(envOf(event)), {
     method: 'POST',

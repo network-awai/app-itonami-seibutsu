@@ -1,24 +1,24 @@
 # Seibutsu (生物) — Biological Entities as Actors
 
-Living taxa and observed individuals as DID-addressed actors. Procedural-generation profiles (`com.etzhayyim.apps.seibutsu.traits`) feed `kami-vegetation` engine 1:1.
+Living taxa and observed individuals as DID-addressed actors. Procedural-generation profiles (`cloud.itonami.apps.seibutsu.traits`) feed `kami-vegetation` engine 1:1.
 
 ## Runtime
 
 | key | value |
 |---|---|
-| domain | `seibutsu.etzhayyim.com` |
-| primary DID | `did:plc:seibutsu` (self-hosted via `plc.etzhayyim.com`, ADR-0019/0014) |
+| domain | `seibutsu.itonami.cloud` |
+| primary DID | `did:plc:seibutsu` (self-hosted via `plc.itonami.cloud`, ADR-0019/0014) |
 | performerType | `service` |
 | Language | TypeScript (TS Native) |
-| Build | `etzhayyim deploy` |
+| Build | `itonami deploy` |
 | Architecture | Design E (3-Tier Write, reactive) |
 | Data store | RisingWave via PDS / Hyperdrive |
 
 ## Identity model (ADR-0019)
 
-- **Taxon actor** = `did:plc:*`, handle `{slug}.seibutsu.etzhayyim.com` (e.g. `bamboo.seibutsu.etzhayyim.com`).
+- **Taxon actor** = `did:plc:*`, handle `{slug}.seibutsu.itonami.cloud` (e.g. `bamboo.seibutsu.itonami.cloud`).
 - **Individual actor** = path-based DID `did:plc:seibutsu:individual:{tid}` for tracked specimens.
-- No nanoid usage. NSID = `com.etzhayyim.apps.seibutsu.*` (4-segment, ADR-0019).
+- No nanoid usage. NSID = `cloud.itonami.apps.seibutsu.*` (4-segment, ADR-0019).
 - 1 project = N actor DIDs (taxa + individuals), scoped by `projectId = did:plc:seibutsu`.
 
 ## Linnaean → DID graph
@@ -30,15 +30,15 @@ domain → kingdom → phylum/division → class → order → family → genus 
 
 Hierarchy is edge-only (`graphar.edge_hasParent`). Records do not nest.
 
-## Lexicons (`00-contracts/lexicons/com/etzhayyim/apps/seibutsu/`)
+## Lexicons (`00-contracts/lexicons/cloud/itonami/apps/seibutsu/`)
 
 | NSID | type | role |
 |---|---|---|
-| `com.etzhayyim.apps.seibutsu.taxon` | record | rank + scientific name + GBIF/NCBI/Wikidata cross-refs |
-| `com.etzhayyim.apps.seibutsu.traits` | record | procedural profile (kami-vegetation TaxonomicProfile mirror) |
-| `com.etzhayyim.apps.seibutsu.observation` | record | individual sighting (geo-h3, image, observer) |
-| `com.etzhayyim.apps.seibutsu.getProfile` | query | DID → taxon + traits + lineage chain |
-| `com.etzhayyim.apps.seibutsu.renderProfile` | query | DID → engine-ready TaxonomicProfile JSON |
+| `cloud.itonami.apps.seibutsu.taxon` | record | rank + scientific name + GBIF/NCBI/Wikidata cross-refs |
+| `cloud.itonami.apps.seibutsu.traits` | record | procedural profile (kami-vegetation TaxonomicProfile mirror) |
+| `cloud.itonami.apps.seibutsu.observation` | record | individual sighting (geo-h3, image, observer) |
+| `cloud.itonami.apps.seibutsu.getProfile` | query | DID → taxon + traits + lineage chain |
+| `cloud.itonami.apps.seibutsu.renderProfile` | query | DID → engine-ready TaxonomicProfile JSON |
 
 ## Kotodama capabilities
 
@@ -89,9 +89,9 @@ grass / fern / palm / conifer / bush / cactus / moss. See `seed/preset-taxa.json
 ## Build & deploy
 
 ```bash
-cd 60-apps/etzhayyim-project-seibutsu/appview/etzhayyim-wasm-seibutsu-s3ibtsu1
-etzhayyim deploy
-curl https://seibutsu.etzhayyim.com/health
+cd 60-apps/itonami-project-seibutsu/appview/itonami-wasm-seibutsu-s3ibtsu1
+itonami deploy
+curl https://seibutsu.itonami.cloud/health
 ```
 
 ## Bring-up runbook (PoC)
@@ -99,17 +99,17 @@ curl https://seibutsu.etzhayyim.com/health
 ### 1. Worker (`src/app.ts`)
 
 5 commands wired (`getProfile`, `renderProfile`, `taxon`, `traits`, `observation`)
-+ reactive `onCommit` for `com.etzhayyim.apps.seibutsu.*`. Reads via Kysely against
++ reactive `onCommit` for `cloud.itonami.apps.seibutsu.*`. Reads via Kysely against
 `graphar.vertex_seibutsu_taxon` / `graphar.vertex_seibutsu_traits`. Writes via
 `com.atproto.repo.createRecord` (Design E Tier 2).
 
 ### 2. Seed (`seed.ts`)
 
 ```bash
-etzhayyim_TOKEN=$(etzhayyim authn token) \
-PDS=https://atproto.etzhayyim.com \
+itonami_TOKEN=$(itonami authn token) \
+PDS=https://atproto.itonami.cloud \
 ROOT_DID=did:plc:seibutsu \
-npx tsx 60-apps/etzhayyim-project-seibutsu/seed.ts
+npx tsx 60-apps/itonami-project-seibutsu/seed.ts
 ```
 
 Loads the 7 preset taxa from `seed/preset-taxa.json` — registers each as an
@@ -119,21 +119,21 @@ parent kingdom/division actors so `hasParent` resolves.
 ### 3. Mint did:plc (ADR-0014)
 
 `seibutsu` is registered in `deps.toml [[mitama_actors]]` with placeholder
-`did:plc:pending`. Mint the real DID via `plc.etzhayyim.com`:
+`did:plc:pending`. Mint the real DID via `plc.itonami.cloud`:
 
 ```bash
 # preview
-etzhayyim actors migrate-to-plc --actor seibutsu --offline
+itonami actors migrate-to-plc --actor seibutsu --offline
 
 # real (PDS signs genesis op with rotation key from D1, ADR-0010)
-etzhayyim actors migrate-to-plc --actor seibutsu --apply
+itonami actors migrate-to-plc --actor seibutsu --apply
 
 # verify
-etzhayyim identifier-audit --deps deps.toml | grep seibutsu
+itonami identifier-audit --deps deps.toml | grep seibutsu
 ```
 
 After `--apply`, deps.toml `did = "did:plc:pending"` is rewritten to the
-24-char base32 identifier returned from `plc.etzhayyim.com`, and `kotodama.jsonld`
+24-char base32 identifier returned from `plc.itonami.cloud`, and `kotodama.jsonld`
 `@id` should be updated to match (and `seed.ts` `ROOT_DID` env).
 
 ### 4. kami-vegetation bridge
@@ -149,7 +149,7 @@ After `--apply`, deps.toml `did = "did:plc:pending"` is rewritten to the
 Browser shell (`kami-web`) flow:
 
 ```js
-const res = await fetch(`https://atproto.etzhayyim.com/xrpc/com.etzhayyim.apps.seibutsu.renderProfile?did=${did}`);
+const res = await fetch(`https://atproto.itonami.cloud/xrpc/cloud.itonami.apps.seibutsu.renderProfile?did=${did}`);
 const json = await res.text();
 catalog.push_json(json);   // WASM call
 ```

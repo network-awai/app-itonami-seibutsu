@@ -1,7 +1,7 @@
 /**
  * seibutsu kotoba — taxon + traits + observation registries + coverage.
  * AT PDS records (no RW). Taxon self-ref parent FK; traits & observations FK→taxon.
- * Public biodiversity open-data only; image-identification AI compute stays etzhayyim.
+ * Public biodiversity open-data only; image-identification AI compute stays itonami.
  */
 
 import type { Etzhayyim } from "@etzhayyim/sdk";

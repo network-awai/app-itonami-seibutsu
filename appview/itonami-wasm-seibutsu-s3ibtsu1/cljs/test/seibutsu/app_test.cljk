@@ -10,14 +10,14 @@
 (deftest initial-db-matches-original-svelte-data-test
   (testing "default-db carries the exact values the Svelte +page.svelte <script> block held"
     (is (= "Seibutsu S3ibtsu1" (:title app/default-db)))
-    (is (= "etzhayyim-project-seibutsu" (:project app/default-db)))
-    (is (= "etzhayyim-wasm-seibutsu-s3ibtsu1" (:name app/default-db)))
+    (is (= "itonami-project-seibutsu" (:project app/default-db)))
+    (is (= "itonami-wasm-seibutsu-s3ibtsu1" (:name app/default-db)))
     (is (= "appview" (:kind app/default-db)))
     (is (= 0 (:route-count app/default-db)))
     (is (= [] (:routes app/default-db)))
     (is (= [] (:vars app/default-db)))
     (is (= true (:xrpc app/default-db)))
-    (is (= "60-apps/etzhayyim-project-seibutsu/appview/etzhayyim-wasm-seibutsu-s3ibtsu1/svelte/src/routes/+page.svelte"
+    (is (= "60-apps/itonami-project-seibutsu/appview/itonami-wasm-seibutsu-s3ibtsu1/svelte/src/routes/+page.svelte"
            (:relative-path app/default-db)))))
 
 (deftest initialize-db-handler-test
@@ -30,8 +30,8 @@
   (testing "the registered ::initialize-db event and all subs wire up end-to-end"
     (rf/dispatch-sync [::app/initialize-db])
     (is (= "Seibutsu S3ibtsu1" @(rf/subscribe [::app/title])))
-    (is (= "etzhayyim-project-seibutsu" @(rf/subscribe [::app/project])))
-    (is (= "etzhayyim-wasm-seibutsu-s3ibtsu1" @(rf/subscribe [::app/name])))
+    (is (= "itonami-project-seibutsu" @(rf/subscribe [::app/project])))
+    (is (= "itonami-wasm-seibutsu-s3ibtsu1" @(rf/subscribe [::app/name])))
     (is (= "appview" @(rf/subscribe [::app/kind])))
     (is (= 0 @(rf/subscribe [::app/route-count])))
     (is (= [] @(rf/subscribe [::app/routes])))

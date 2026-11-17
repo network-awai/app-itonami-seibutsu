@@ -1,6 +1,6 @@
 ;; seibutsu appview frontend — reagent + re-frame, rendered with jp-go-dds
 ;; (デジタル庁デザインシステム). Migrated from
-;; appview/etzhayyim-wasm-seibutsu-s3ibtsu1/svelte (SvelteKit: one +page.svelte
+;; appview/itonami-wasm-seibutsu-s3ibtsu1/svelte (SvelteKit: one +page.svelte
 ;; static app-metadata card + one +server.ts XRPC proxy, the latter preserved
 ;; at ../src/xrpc-proxy.ts).
 ;;
